@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🌿 Mental Wellness Companion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            height: 100vh; 
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: white;
+            overflow: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container { max-width: 900px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 2.8em; font-weight: 700; margin-bottom: 10px; text-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2em; opacity: 0.9; font-weight: 300; margin-bottom: 20px; }
+        .keywords { 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(15px); 
+            padding: 20px 30px; 
+            border-radius: 25px; 
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .keywords p { margin: 0 0 15px 0; font-weight: 600; opacity: 0.95; }
+        .keywords-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+        .keyword-btn {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            opacity: 0.9;
+            position: relative;
+        }
+        .keyword-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            opacity: 1;
+        }
+        .keyword-btn:active { transform: scale(0.98); }
+        #chatbox { 
+            flex: 1; 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(20px); 
+            border-radius: 25px; 
+            padding: 30px; 
+            overflow-y: auto; 
+            margin-bottom: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .message { 
+            margin: 15px 0; 
+            padding: 20px 28px; 
+            border-radius: 25px; 
+            max-width: 85%; 
+            animation: slideIn 0.4s ease-out;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            line-height: 1.5;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user { 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            margin-left: auto; 
+            text-align: right;
+            border-bottom-right-radius: 8px;
+        }
+        .bot { 
+            background: rgba(255,255,255,0.2); 
+            backdrop-filter: blur(15px);
+            border-bottom-left-radius: 8px;
+        }
+        .input-container { 
+            display: flex; 
+            gap: 15px; 
+            background: rgba(255,255,255,0.1); 
+            padding: 25px; 
+            border-radius: 50px; 
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        #input { 
+            flex: 1; 
+            padding: 20px 30px; 
+            border: none; 
+            border-radius: 50px; 
+            background: rgba(255,255,255,0.25);
+            font-size: 16px;
+            color: white;
+            outline: none;
+            font-family: inherit;
+        }
+        #input::placeholder { color: rgba(255,255,255,0.8); }
+        button { 
+            padding: 20px 35px; 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none; 
+            border-radius: 50px; 
+            color: white; 
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 35px rgba(79, 172, 254, 0.4);
+        }
+        button:hover { transform: scale(1.08); box-shadow: 0 18px 45px rgba(79, 172, 254, 0.6); }
+        button:active { transform: scale(1.02); }
+        .typing { font-style: italic; opacity: 0.85; display: flex; align-items: center; gap: 4px; }
+        .typing span { animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        @media (max-width: 768px) { 
+            .container { padding: 15px; } 
+            .header h1 { font-size: 2.2em; }
+            .input-container, .keywords { padding: 18px; }
+            .keyword-btn { padding: 10px 16px; font-size: 14px; }
+        }
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .particle { 
+            position: absolute; 
+            background: rgba(255,255,255,0.6); 
+            border-radius: 50%; 
+            animation: float 8s infinite linear; 
+        }
+        @keyframes float { 
+            0% { transform: translateY(100vh) rotate(0deg) scale(0); opacity: 0; } 
+            10% { opacity: 1; scale(1); } 
+            90% { opacity: 1; } 
+            100% { transform: translateY(-100px) rotate(360deg) scale(0); opacity: 0; } 
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> Wellness Companion</h1>
+            <p>Your personal mental health guide ✨</p>
+            <div class="keywords">
+                <p>💡 <i>Click or type these:</i></p>
+                <div class="keywords-grid">
+                    <span class="keyword-btn" onclick="setInput('I\'m stressed')" title="Box Breathing Technique">stressed</span>
+                    <span class="keyword-btn" onclick="setInput('anxious')" title="5-4-3-2-1 Grounding">anxious</span>
+                    <span class="keyword-btn" onclick="setInput('sad')" title="Gratitude Journal">sad</span>
+                    <span class="keyword-btn" onclick="setInput('can\'t sleep')" title="4-7-8 Breathing">sleep</span>
+                    <span class="keyword-btn" onclick="setInput('happy')" title="Joy Amplifier">happy</span>
+                    <span class="keyword-btn" onclick="setInput('angry')" title="Anger Reset">angry</span>
+                    <span class="keyword-btn" onclick="setInput('can\'t focus')" title="Pomodoro Focus">focus</span>
+                    <span class="keyword-btn" onclick="setInput('no motivation')" title="2-Min Rule">motivation</span>
+                    <span class="keyword-btn" onclick="setInput('exam')" title="Exam Brain Hacks">exam</span>
+                    <span class="keyword-btn" onclick="setInput('overwhelmed')" title="Priority Matrix">overwhelmed</span>
+                </div>
+            </div>
+        </div>
+        <div id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="input" placeholder="How are you feeling today?">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Floating particles background
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = (Math.random() * 6 + 2) + 'px';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                particles.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        const chatbox = document.getElementById('chatbox');
+        const input = document.getElementById('input');
+
+        function addMessage(msg, isUser, isTyping = false) {
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : 'bot'}`;
+            if (isTyping) {
+                div.innerHTML = '<div class="typing">Bot is thinking<span>.</span><span>.</span><span>.</span></div>';
+            } else {
+                div.innerHTML = msg;
+            }
+            chatbox.appendChild(div);
+            chatbox.scrollTop = chatbox.scrollHeight;
+            return div;
+        }
+
+        function typeWriter(text, element, speed = 40) {
+            let i = 0;
+            element.textContent = '';
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        async function sendMessage() {
+            const msg = input.value.trim();
+            if (!msg) return;
+            
+            addMessage(msg, true);
+            input.value = '';
+            
+            // Typing indicator
+            const typingDiv = addMessage('', false, true);
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            try {
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 10000);
+                
+                const res = await fetch(`/chat?message=${encodeURIComponent(msg)}`, { signal: controller.signal });
+                const data = await res.json();
+                
+                typingDiv.remove();
+                
+                // Typewriter effect
+                const botDiv = addMessage('', false);
+                typeWriter(data.reply, botDiv);
+                
+            } catch (error) {
+                typingDiv.remove();
+                addMessage("🤖 Connection issue—please try again! (Server running?)", false);
+            }
+        }
+
+        function setInput(text) {
+            input.value = text;
+            input.focus();
+            setTimeout(() => sendMessage(), 800);  // Auto-send after click
+        }
+
+        // Enter key support
+        input.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') sendMessage(); 
+        });
+
+        // Welcome message
+        setTimeout(() => {
+            addMessage("Hi! 🌟 I'm your wellness companion. Click any keyword above or type how you're feeling...", false);
+        }, 800);
+    </script>
+</body>
+</html>
