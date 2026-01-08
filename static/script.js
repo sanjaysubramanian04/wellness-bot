@@ -2,27 +2,35 @@ const chatbox = document.getElementById("chatbox");
 const input = document.getElementById("msgInput");
 const sendBtn = document.getElementById("sendBtn");
 
-/* -------- CHAT -------- */
+/* -------- CHAT UI -------- */
 function addMsg(text, type) {
   const div = document.createElement("div");
   div.className = `message ${type}`;
-  div.textContent = text;
+  div.innerHTML = text.replace(/\n/g, "<br>");
   chatbox.appendChild(div);
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-function sendMessage() {
+/* -------- SEND MESSAGE -------- */
+async function sendMessage() {
   const msg = input.value.trim();
   if (!msg) return;
 
   addMsg(msg, "user");
   input.value = "";
 
-  const reply = getReply(msg);
-  setTimeout(() => addMsg(reply, "bot"), 400);
+  try {
+    const res = await fetch(`/chat?message=${encodeURIComponent(msg)}`);
+    const data = await res.json();
+
+    addMsg(data.reply, "bot");
+  } catch (err) {
+    addMsg("⚠️ Server not responding. Please try again.", "bot");
+    console.error(err);
+  }
 }
 
-/* MOBILE SAFE EVENTS */
+/* -------- EVENTS (MOBILE SAFE) -------- */
 sendBtn.addEventListener("click", sendMessage);
 sendBtn.addEventListener("touchstart", e => {
   e.preventDefault();
@@ -33,49 +41,10 @@ input.addEventListener("keydown", e => {
   if (e.key === "Enter") sendMessage();
 });
 
+/* QUICK BUTTONS */
 function quickSend(text) {
   input.value = text;
   sendMessage();
-}
-
-/* -------- BOT LOGIC -------- */
-function getReply(msg) {
-  msg = msg.toLowerCase();
-
-  if (msg.includes("stress"))
-    return "🧘 Stress relief:\n• Inhale 4 sec\n• Hold 4 sec\n• Exhale 6 sec\nRepeat 5 times.";
-
-  if (msg.includes("anxiety") || msg.includes("anxious"))
-    return "🌿 Anxiety grounding:\n5 things you see\n4 feel\n3 hear.";
-
-  if (msg.includes("sad") || msg.includes("low"))
-    return "💙 Feeling low?\nDrink water, sit in sunlight, write one good thought.";
-
-  if (msg.includes("sleep"))
-    return "😴 Better sleep:\nNo phone before bed\nDeep breathing\nDark room.";
-
-  if (msg.includes("happy"))
-    return "✨ Keep happiness alive:\nSmile\nShare joy\nDo what you love.";
-
-  if (msg.includes("angry"))
-    return "🔥 Anger reset:\nPause\nBreathe slow\nRelax body.";
-
-  if (msg.includes("focus"))
-    return "🎯 Focus tip:\n25 min work\n5 min break.";
-
-  if (msg.includes("motivation"))
-    return "🚀 Start for 2 minutes.\nAction creates motivation.";
-
-  if (msg.includes("exam"))
-    return "📚 Exam calm:\nTrust preparation\nBreathe slowly.";
-
-  if (msg.includes("tired"))
-    return "😌 Energy reset:\nWater\nStretch\nDeep breath.";
-
-  if (msg.includes("overwhelmed"))
-    return "🌊 Overwhelmed?\nWrite 3 tasks\nDo one.";
-
-  return "🌱 Take a slow breath.\nYou’re doing your best.";
 }
 
 /* -------- PARTICLES -------- */
@@ -83,8 +52,8 @@ const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
 function resize() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 resize();
 window.addEventListener("resize", resize);
@@ -113,5 +82,13 @@ function animate() {
 }
 animate();
 
-/* WELCOME */
+/* -------- WELCOME -------- */
 addMsg("Hi 🌱 How are you feeling today?", "bot");
+function addTyping() {
+  const div = document.createElement("div");
+  div.className = "message bot";
+  div.textContent = "Typing...";
+  chatbox.appendChild(div);
+  chatbox.scrollTop = chatbox.scrollHeight;
+  return div;
+}
