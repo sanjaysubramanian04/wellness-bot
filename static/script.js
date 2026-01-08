@@ -1,115 +1,117 @@
-const API_URL = 'http://localhost:8000/chat';
-let sessionId = localStorage.getItem('sessionId') || null;
+const chatbox = document.getElementById("chatbox");
+const input = document.getElementById("msgInput");
+const sendBtn = document.getElementById("sendBtn");
 
-const messagesEl = document.getElementById('messages');
-const inputEl = document.getElementById('message-input');
-const sendBtn = document.getElementById('send-btn');
-const crisisNotice = document.getElementById('crisis-notice');
-
-// Particles background
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-let particles = [];
-
-class Particle {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
-    }
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-        if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
-    }
-    draw() {
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
+/* -------- CHAT -------- */
+function addMsg(text, type) {
+  const div = document.createElement("div");
+  div.className = `message ${type}`;
+  div.textContent = text;
+  chatbox.appendChild(div);
+  chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-for (let i = 0; i < 100; i++) particles.push(new Particle());
+function sendMessage() {
+  const msg = input.value.trim();
+  if (!msg) return;
 
-function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animateParticles);
+  addMsg(msg, "user");
+  input.value = "";
+
+  const reply = getReply(msg);
+  setTimeout(() => addMsg(reply, "bot"), 400);
 }
-animateParticles();
 
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+/* MOBILE SAFE EVENTS */
+sendBtn.addEventListener("click", sendMessage);
+sendBtn.addEventListener("touchstart", e => {
+  e.preventDefault();
+  sendMessage();
 });
 
-function addMessage(role, content, isTyping = false) {
-    const msg = document.createElement('div');
-    msg.className = `message ${role} ${isTyping ? 'typing' : ''}`;
-    msg.textContent = content;
-    messagesEl.appendChild(msg);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-function typeMessage(content, callback) {
-    const msg = document.createElement('div');
-    msg.className = 'message assistant typing';
-    messagesEl.appendChild(msg);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    
-    let i = 0;
-    const typer = setInterval(() => {
-        msg.textContent = content.slice(0, i);
-        i++;
-        if (i > content.length) {
-            clearInterval(typer);
-            msg.classList.remove('typing');
-            if (callback) callback();
-        }
-    }, 30);
-}
-
-async function sendMessage() {
-    const message = inputEl.value.trim();
-    if (!message) return;
-    
-    addMessage('user', message);
-    inputEl.value = '';
-    sendBtn.disabled = true;
-    
-    try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message, session_id: sessionId })
-        });
-        const data = await res.json();
-        sessionId = data.session_id;
-        localStorage.setItem('sessionId', sessionId);
-        
-        if (data.is_crisis) {
-            crisisNotice.textContent = data.reply + ' 💙';
-            crisisNotice.classList.remove('hidden');
-            setTimeout(() => crisisNotice.classList.add('hidden'), 10000);
-        } else {
-            typeMessage(data.reply);
-        }
-    } catch (err) {
-        addMessage('assistant', 'Sorry, having trouble connecting. Try again?');
-    }
-    sendBtn.disabled = false;
-}
-
-sendBtn.addEventListener('click', sendMessage);
-inputEl.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
 });
 
-// Welcome message
-addMessage('assistant', 'Hello! I\'m your Wellness Companion. 🌱 Share how you\'re feeling, or ask for tips on stress, anxiety, or mindfulness.');
+function quickSend(text) {
+  input.value = text;
+  sendMessage();
+}
+
+/* -------- BOT LOGIC -------- */
+function getReply(msg) {
+  msg = msg.toLowerCase();
+
+  if (msg.includes("stress"))
+    return "🧘 Stress relief:\n• Inhale 4 sec\n• Hold 4 sec\n• Exhale 6 sec\nRepeat 5 times.";
+
+  if (msg.includes("anxiety") || msg.includes("anxious"))
+    return "🌿 Anxiety grounding:\n5 things you see\n4 feel\n3 hear.";
+
+  if (msg.includes("sad") || msg.includes("low"))
+    return "💙 Feeling low?\nDrink water, sit in sunlight, write one good thought.";
+
+  if (msg.includes("sleep"))
+    return "😴 Better sleep:\nNo phone before bed\nDeep breathing\nDark room.";
+
+  if (msg.includes("happy"))
+    return "✨ Keep happiness alive:\nSmile\nShare joy\nDo what you love.";
+
+  if (msg.includes("angry"))
+    return "🔥 Anger reset:\nPause\nBreathe slow\nRelax body.";
+
+  if (msg.includes("focus"))
+    return "🎯 Focus tip:\n25 min work\n5 min break.";
+
+  if (msg.includes("motivation"))
+    return "🚀 Start for 2 minutes.\nAction creates motivation.";
+
+  if (msg.includes("exam"))
+    return "📚 Exam calm:\nTrust preparation\nBreathe slowly.";
+
+  if (msg.includes("tired"))
+    return "😌 Energy reset:\nWater\nStretch\nDeep breath.";
+
+  if (msg.includes("overwhelmed"))
+    return "🌊 Overwhelmed?\nWrite 3 tasks\nDo one.";
+
+  return "🌱 Take a slow breath.\nYou’re doing your best.";
+}
+
+/* -------- PARTICLES -------- */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const particles = Array.from({ length: 40 }, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  r: Math.random() * 2 + 1,
+  dx: Math.random() - 0.5,
+  dy: Math.random() - 0.5
+}));
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.dx;
+    p.y += p.dy;
+    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.4)";
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* WELCOME */
+addMsg("Hi 🌱 How are you feeling today?", "bot");
