@@ -18,13 +18,6 @@ A professional, empathetic AI chatbot for mental health support. Built with **Fa
 - Frontend: Vanilla HTML/CSS/JS (no frameworks for lightness)
 - Vector DB: FAISS for PDF retrieval
 
-## 📦 Quick Start
-1. Clone & `pip install -r requirements.txt`
-2. Add PDFs to `wellness_docs/` (see below)
-3. Set `.env` with `OPENAI_API_KEY`
-4. `uvicorn app:app --reload`
-5. Open `http://localhost:8000/static/index.html`
-
 ## 📱 Deployment
 - Fullstack: Vercel
 
