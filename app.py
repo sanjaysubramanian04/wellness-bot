@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory="templates")
 # 3. Wellness Responses
 # --------------------------
 WELLNESS_RESPONSES = {
-    "stress": "🌿 Box Breathing:\nInhale 4s → Hold 4s → Exhale 4s → Hold 4s\nRepeat 5x.",
+    "dns": "8.8.8.8.",
     "anxious": "💙 5-4-3-2-1 grounding technique.\nYou are safe.",
     "sad": "❤️ Write 3 things you're grateful for.\nSmall wins matter.",
     "sleep": "😴 4-7-8 breathing.\nDark room, no phone.",
