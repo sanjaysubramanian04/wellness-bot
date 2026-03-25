@@ -1,6 +1,6 @@
 # 🌿 Mental Wellness Companion Bot
 
-A professional, empathetic AI chatbot for mental health support. Built with **FastAPI**  from wellness PDFs. Features crisis detection, session memory, typing animations, and calming particle UI.
+A professional, empathetic AI chatbot for mental health support. Built with **FastAPI**  from wellness PDFs. Features crisis detection, typing animations, and calming particle UI.
 
 ## ✨ Features
 - **Empathetic Responses**: Trained on coping strategies, mindfulness, stress relief.
@@ -15,4 +15,4 @@ A professional, empathetic AI chatbot for mental health support. Built with **Fa
 ## 📱 Deployment
 - Fullstack: Vercel
 
-⭐ Star if helpful! #MentalHealth #AI #Python #FastAPI
+⭐ Star if helpful! #MentalHealth #Python #FastAPI
