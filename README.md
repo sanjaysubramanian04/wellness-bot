@@ -6,7 +6,7 @@ This system uses a **rule-based AI approach**, ensuring predictable and controll
 ---
 
 # 🌐 Live Demo
-https://your-project-link.vercel.app
+https://wellness-bot.vercel.app/
 
 ---
 
