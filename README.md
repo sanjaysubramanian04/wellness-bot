@@ -96,7 +96,7 @@ https://wellness-bot.vercel.app/
 
 # 🔗 Project Link
 
-- Live Application: https://your-project-link.vercel.app  
+- Live Application: https://wellness-bot.vercel.app/ 
 
 ---
 
