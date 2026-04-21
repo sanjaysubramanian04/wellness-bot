@@ -104,6 +104,10 @@ https://wellness-bot.vercel.app/
 This repository contains the **complete implementation of the chatbot system**, focusing on simplicity, privacy, and structured interaction.
 
 ---
+## 📄 License
+This project is licensed under the MIT License.
+
+---
 
 # 🎯 Key Highlights
 - Rule-based AI chatbot (No ML/LLM used)  
